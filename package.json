@@ -1,0 +1,16 @@
+{
+  "name": "make-html-string",
+  "version": "1.0.0",
+  "description": "",
+  "main": "make-html-string.js",
+  "type": "module",
+  "scripts": {
+    "test": "node make-html-string-test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.51.0"
+  }
+}
