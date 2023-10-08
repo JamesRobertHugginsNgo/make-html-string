@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.51.0"
+    "eslint": "^8.51.0",
+    "test-group": "github:JamesRobertHugginsNgo/test-group#1.0.1"
   }
 }
