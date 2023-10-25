@@ -33,12 +33,12 @@ export default function makeHtmlString(definition = {}, options = {}) {
 	}
 
 	if (typeof definition === 'object') {
-		if (Array.isArray(definition)) {
-			const {
-				selfClosing = false,
-				voidElements = htmlVoidElements
-			} = options;
+		const {
+			selfClosing = false,
+			voidElements = htmlVoidElements
+		} = options;
 
+		if (Array.isArray(definition)) {
 			const elementArray = [];
 
 			const length = definition.length;
@@ -52,25 +52,13 @@ export default function makeHtmlString(definition = {}, options = {}) {
 			return elementArray.join('');
 		}
 
-		let {
-			selfClosing = false,
-			voidElements = htmlVoidElements
-		} = options;
-
 		const {
 			name = 'div',
 			attributes,
 			children,
-			selfClosing: selfClosingDefinition,
-			voidElements: voidElementsDefinition
+			selfClosing: selfClosingDefinition = selfClosing,
+			voidElements: voidElementsDefinition = voidElements
 		} = definition;
-
-		if (selfClosingDefinition !== undefined) {
-			selfClosing = selfClosingDefinition;
-		}
-		if (voidElementsDefinition !== undefined) {
-			voidElements = voidElementsDefinition;
-		}
 
 		const elementArray = ['<'];
 
@@ -90,9 +78,9 @@ export default function makeHtmlString(definition = {}, options = {}) {
 		}
 		elementArray.push(tagArray.join(' '));
 
-		if (!voidElements || !voidElements.includes(name)) {
+		if (!voidElementsDefinition || !voidElementsDefinition.includes(name)) {
 			if (children == null) {
-				if (selfClosing) {
+				if (selfClosingDefinition) {
 					elementArray.push(' />');
 				} else {
 					elementArray.push('></', name, '>');
@@ -100,7 +88,10 @@ export default function makeHtmlString(definition = {}, options = {}) {
 			} else {
 				elementArray.push(
 					'>',
-					makeHtmlString(children, { selfClosing, voidElements }),
+					makeHtmlString(children, {
+						selfClosing: selfClosingDefinition,
+						voidElements: voidElementsDefinition
+					}),
 					'</', name, '>'
 				);
 			}
