@@ -10,5 +10,6 @@
     },
     "rules": {
         "semi": "warn"
-    }
+    },
+    "ignorePatterns": ["dist/*"]
 }
