@@ -1,6 +1,6 @@
 {
   "name": "make-html-string",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "main": "make-html-string.js",
   "type": "module",
