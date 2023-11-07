@@ -5,7 +5,7 @@ Returns a valid HTML tag as a string.
 ## Installation
 
 ```
-npm install --save git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#1.2.0
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#1.2.0
 ```
 
 ## Usage
