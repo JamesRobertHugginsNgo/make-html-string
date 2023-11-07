@@ -73,7 +73,7 @@ testGroup('Make HTML String'.toUpperCase(), () => {
 		const htmlString = makeHtmlString({ name: 'span', children: { name: 'strong', children: 'Hello World' } });
 		test('Result Should Be a SPAN Tag With a STRONG tag With "Hello World" Text', () => {
 			console.log(htmlString);
-			return htmlString === '<span><strong>Hello</strong> World</span>';
+			return htmlString === '<span><strong>Hello World</strong></span>';
 		});
 	});
 
@@ -81,7 +81,7 @@ testGroup('Make HTML String'.toUpperCase(), () => {
 		const htmlString = makeHtmlString({ name: 'span', children: ['Hello', ' ', 'World'] });
 		test('Result Should Be a SPAN Tag With "Hello World" Text', () => {
 			console.log(htmlString);
-			return htmlString === '<span><strong>Hello World</strong></span>';
+			return htmlString === '<span>Hello World</span>';
 		});
 	});
 

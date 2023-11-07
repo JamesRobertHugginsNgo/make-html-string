@@ -5,7 +5,7 @@ Returns a valid HTML tag as a string.
 ## Installation
 
 ```
-npm install --save git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#1.1.0
+npm install --save git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#1.2.0
 ```
 
 ## Usage
@@ -202,93 +202,10 @@ Neither doctype (`<!DOCTYPE html>`) nor XML declaration (`<?xml version="1.0" en
 
 ### Definition Object
 
-<table>
-
-<thead>
-
-<tr>
-<th>
-Properties
-</th>
-<th>
-Type
-</th>
-<th>
-Descriptions
-</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<th>
-name
-</th>
-<td>
-string
-</td>
-<td>
-Optional.
-The name of the tag/element.
-Defaults to "div".
-</td>
-</tr>
-
-<tr>
-<th>
-attributes
-</th>
-<td>
-object
-</td>
-<td>
-Optional.
-The tag/element's attributes, based on the key-value pair.
-</td>
-</tr>
-
-<tr>
-<th>
-children
-</th>
-<td>
-any
-</td>
-<td>
-Optional.
-Represent the child tags/elements.
-Can be any types including a definition object and an array of definition objects.
-</td>
-</tr>
-
-<tr>
-<th>
-selfClosing
-</th>
-<td>
-boolean
-</td>
-<td>
-Optional.
-Overrides the flag indicating that tags/elements without children should be self closing.
-</td>
-</tr>
-
-<tr>
-<th>
-voidElements
-</th>
-<td>
-[string]
-</td>
-<td>
-Optional.
-Overrides the array of element's name, indicating that certain tags/elements should be rendered as a void element.
-</td>
-</tr>
-
-</tbody>
-
-</table>
+Properties | Type | Descriptions
+--- | --- | ---
+name | string | Optional. The name of the tag/element. Defaults to "div".
+attributes | object | Optional. The tag/element's attributes, based on the key-value pair.
+children | any | Optional. Represent the child tags/elements. Can be any types including a definition object and an array of definition objects.
+selfClosing | boolean | Optional. Overrides the flag indicating that tags/elements without children should be self closing.
+voidElements | [string] | Optional. Overrides the array of element's name, indicating that certain tags/elements should be rendered as a void element.
