@@ -2,210 +2,134 @@
 
 Returns a valid HTML tag as a string.
 
-## Installation
+## NPM Installation
 
 ```
-npm install --save git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#1.2.0
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#1.2.0
 ```
 
-## Usage
+## Function: makeHtmlString(definition, options)
 
-### makeHtmlString
+Argument | Type | Description
+-- | -- | --
+`definition` | `object` | _Optional_. Defines the HTML string. _Defaults to `{}`_.
+`options` | `object` | _Optional_. Configures function behaviour. _Defaults to `{}`_.
 
-Makes a valid HTML tag as a string.
+Return type: `string`.
 
 ``` JavaScript
 import makeHtmlString from 'make-html-string';
 
-console.log(makeHtmlString()); // <div></div>
+// <div></div>
+makeHtmlString();
 
-console.log(makeHtmlString({ name: 'span' })); // <span></span>
+// <span></span>
+makeHtmlString({ name: 'span' }); 
 
-console.log(makeHtmlString({ name: 'br' })); // <br>
+// <br> - void element
+makeHtmlString({ name: 'br' });
 
-console.log(makeHtmlString({ 
+// <span class="class-name" id="class-id"></span>
+makeHtmlString({ 
   name: 'span', 
   attributes: { 
     'class': 'class-name', 
     'id': 'class-id' 
   } 
-})); // <span class="class-name" id="class-id"></span>
+})
 
-console.log(makeHtmlString({ 
+// <span>true</span>
+makeHtmlString({ 
   name: 'span', 
   children: true
-})); // <span>true</span>
+});
 
-console.log(makeHtmlString({ 
+// <span>100</span>
+makeHtmlString({ 
   name: 'span', 
   children: 100
-})); // <span>100</span>
+});
 
-console.log(makeHtmlString({ 
+// <span>Hello World</span>
+makeHtmlString({ 
   name: 'span', 
   children: 'Hello World'
-})); // <span>Hello World</span>
+});
 
-console.log(makeHtmlString({ 
+// <span><strong>Hello World</strong></span>
+makeHtmlString({ 
   name: 'span', 
-  children: { name: 'strong', children: 'Hello World' }
-})); // <span><strong>Hello World</strong></span>
+  children: { 
+    name: 'strong', 
+    children: 'Hello World' 
+  }
+});
 
-console.log(makeHtmlString({ 
+// <span><strong>Hello</strong> World</span>
+makeHtmlString({ 
   name: 'span', 
   children: [
-    { name: 'strong', children: 'Hello' },
+    { 
+      name: 'strong', 
+      children: 'Hello' 
+    },
     ' World'
   ]
-})); // <span><strong>Hello</strong> World</span>
-```
-
-### makeXmlString
-
-Makes a valid XML tag as a string, including XHTML.
-
-``` JavaScript
-import { makeXmlString } from 'make-html-string';
-
-console.log(makeXmlString()); // <div />
-
-console.log(makeHtmlString({ name: 'span' })); // <span />
-
-console.log(makeHtmlString({ name: 'br' })); // <br />
-
-console.log(makeHtmlString({ 
-  name: 'span', 
-  attributes: { 
-    'class': 'class-name', 
-    'id': 'class-id' 
-  } 
-})); // <span class="class-name" id="class-id" />
-
-console.log(makeHtmlString({ 
-  name: 'span', 
-  children: true
-})); // <span>true</span>
-
-console.log(makeHtmlString({ 
-  name: 'span', 
-  children: 100
-})); // <span>100</span>
-
-console.log(makeHtmlString({ 
-  name: 'span', 
-  children: 'Hello World'
-})); // <span>Hello World</span>
-
-console.log(makeHtmlString({ 
-  name: 'span', 
-  children: { name: 'strong', children: 'Hello World' }
-})); // <span><strong>Hello World</strong></span>
-
-console.log(makeHtmlString({ 
-  name: 'span', 
-  children: [
-    { name: 'strong', children: 'Hello' },
-    ' World'
-  ]
-})); // <span><strong>Hello</strong> World</span>
-```
-
-### Options
-
-Both `makeHtmlString` and `makeXmlString` functions can accept a second argument for options.
-
-The constant `htmlVoidElements` contains all the name for HTML void elements. This is the default `voidElements` value for `makeHtmlString` function.
-
-Options are also passed down to its children.
-
-``` JavaScript
-import makeHtmlString, { htmlVoidElements, makeXmlString } from 'make-html-string';
-
-makeHtmlString({}, {
-  selfClosing: false,
-  voidElements: htmlVoidElements 
-});
-
-makeXmlString({}, {
-  selfClosing: true,
-  voidElements: null 
-});
-
-```
-
-The options can also be passed as part of the definitions. This allows the parent's options to be overwritten. Any new options will be passed down to the childrens.
-
-``` JavaScript
-import makeHtmlString, { htmlVoidElements } from 'make-html-string';
-
-makeHtmlString({
-  name: 'div',
-  children: {
-    name: 'svg',
-    attributes: {
-      xmlns: 'http://www.w3.org/2000/svg',
-      version: '1.1',
-      width: 120,
-      height: 120
-    },
-    children: {
-      name: 'rect',
-      attributes: {
-        x: 14,
-        y: 23,
-        width: 200,
-        height: 50,
-        fill: 'lime',
-        stroke: 'black'
-      }
-    },
-    selfClosing: true,
-    voidElements: null
-  },
-  selfClosing: false,
-  voidElements: htmlVoidElements
 });
 ```
 
-More on [void elements and self-closing tags in the MDN web docs](https://developer.mozilla.org/en-US/docs/Glossary/Void_element).
+### Argument: definition
 
-### htmlVoidElements
+Type: `any`. _Optional_.
 
-HTML contains the following void elements.
+When typeof "undefined", uses the default value of `{}`.
+
+When typeof "null", returns an empty string (`''`).
+
+When typeof "boolean", "number" or "string", returns the string equivalent of the value.
+
+When typeof "object", defines an HTML string using the following keys:
+
+Key | Type | Description
+-- | -- | --
+`name` | `string` | _Optional_. Tag name. _Defaults to `'div'`_
+`attributes` | `object` | _Optional_. Tag attributes.
+`children` | `object` | _Optional_. Tag children.
+`selfClosing` | `boolean` | _Optional_. Overrides the `options.selfClosing` main argument for this and children elements.
+`voidElements` | `[string]` | _Optional_. Overrides the `options.voidElements` main argument for this and children elements.
+
+When typeof "array", returns the joined values of the array items based on the above results.
+
+### Argument: options
+
+Type: `object`. _Optional_.
+
+Key | Type | Description
+-- | -- | --
+`selfClosing` | `boolean` | _Optional_. Uses the self-closing tag format when `children` is not defined. _Defaults to `false`_.
+`voidElements` | `[string]` | _Optional_. A list of tag names that should be treated as HTML void elements. Should be set to falsy value (`false` or `0` or `''` or `null`) to make xml strings. _Defaults to `HTML_VOID_ELEMENTS` constant_.
+
+## Constant: HTML_VOID_ELEMENTS
 
 ``` JavaScript
-/**
- * A array of HTML names for void elements.
- * @type {[string]}
- */
-export const htmlVoidElements = [
-  'area',
-  'base',
-  'br',
-  'col',
-  'embed',
-  'hr',
-  'img',
-  'input',
-  'link',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr'
-];
+export const HTML_VOID_ELEMENTS
+	= ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 ```
 
-Neither doctype (`<!DOCTYPE html>`) nor XML declaration (`<?xml version="1.0" encoding="UTF-8"?>`) are not included. If needed, you should pass this in the definition as string.
+__Note__: Neither doctype (`<!DOCTYPE html>`) nor XML declaration (`<?xml version="1.0" encoding="UTF-8"?>`) are not included. If needed, you should pass this in the definition as string.
 
-## Reference
+## Using Script Tag
 
-### Definition Object
+The JavaScript library (found in the "dist" folder) can be used directly using an HTML script tag. The JavaScript module is exposed as a global `MakeHtmlString` namespace with the main function exposed as `MakeHtmlString.default`.
 
-Properties | Type | Descriptions
---- | --- | ---
-name | string | Optional. The name of the tag/element. Defaults to "div".
-attributes | object | Optional. The tag/element's attributes, based on the key-value pair.
-children | any | Optional. Represent the child tags/elements. Can be any types including a definition object and an array of definition objects.
-selfClosing | boolean | Optional. Overrides the flag indicating that tags/elements without children should be self closing.
-voidElements | [string] | Optional. Overrides the array of element's name, indicating that certain tags/elements should be rendered as a void element.
+``` HTML
+<script src="node_modules/make-html-string/dist/make-html-string.js"></script>
+<script>
+  const { default: makeHtmlString, HTML_VOID_ELEMENTS } = MakeHtmlString;
+</script>
+```
+
+## References
+
+- [Void element, MDN web docs](https://developer.mozilla.org/en-US/docs/Glossary/Void_element).
+- [Self-closing tags, MDN web docs](https://developer.mozilla.org/en-US/docs/Glossary/Void_element#self-closing_tags).

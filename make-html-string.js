@@ -2,22 +2,8 @@
  * A array of HTML names for void elements.
  * @type {[string]}
  */
-export const htmlVoidElements = [
-	'area',
-	'base',
-	'br',
-	'col',
-	'embed',
-	'hr',
-	'img',
-	'input',
-	'link',
-	'meta',
-	'param',
-	'source',
-	'track',
-	'wbr'
-];
+export const HTML_VOID_ELEMENTS
+	= ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
 /**
  * Returns a valid HTML tag as a string.
@@ -35,7 +21,7 @@ export default function makeHtmlString(definition = {}, options = {}) {
 	if (typeof definition === 'object') {
 		const {
 			selfClosing = false,
-			voidElements = htmlVoidElements
+			voidElements = HTML_VOID_ELEMENTS
 		} = options;
 
 		if (Array.isArray(definition)) {
@@ -103,20 +89,4 @@ export default function makeHtmlString(definition = {}, options = {}) {
 	}
 
 	return String(definition);
-}
-
-/**
- * Returns a valid XML tag as a string.
- * @param {any} [definition={}]
- * @param {object} [options={}]
- * @param {object} [options.selfClosing=true]
- * @param {[string]} [options.voidElements=null]
- * @returns {string}
- */
-export function makeXmlString(definition = {}, options = {}) {
-	const {
-		selfClosing = true,
-		voidElements = null
-	} = options;
-	return makeHtmlString(definition, { selfClosing, voidElements });
 }
