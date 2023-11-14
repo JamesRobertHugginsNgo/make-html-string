@@ -2,7 +2,7 @@
 
 import { test, testGroup } from 'test-group';
 
-import makeHtmlString, { makeXmlString } from './make-html-string.js';
+import makeHtmlString from '../make-html-string.js';
 
 testGroup('Make HTML String'.toUpperCase(), () => {
 	testGroup('With No Definition', () => {
@@ -95,8 +95,13 @@ testGroup('Make HTML String'.toUpperCase(), () => {
 });
 
 testGroup('Make XML String'.toUpperCase(), () => {
+	const xmlOptions = {
+		selfClosing: true,
+		voidElements: []
+	};
+
 	testGroup('With No Definition', () => {
-		const xmlString = makeXmlString();
+		const xmlString = makeHtmlString({}, xmlOptions);
 		test('Result Should Be a Self Closing DIV Tag', () => {
 			console.log(xmlString);
 			return xmlString === '<div />';
@@ -104,7 +109,7 @@ testGroup('Make XML String'.toUpperCase(), () => {
 	});
 
 	testGroup('With "{ name: \'svg\' }" Definition', () => {
-		const xmlString = makeXmlString({ name: 'svg' });
+		const xmlString = makeHtmlString({ name: 'svg' }, xmlOptions);
 		test('Result Should Be a Self Closing SVG Tag', () => {
 			console.log(xmlString);
 			return xmlString === '<svg />';
@@ -112,7 +117,7 @@ testGroup('Make XML String'.toUpperCase(), () => {
 	});
 
 	testGroup('With "{ name: \'br\' }" Definition', () => {
-		const xmlString = makeXmlString({ name: 'br' });
+		const xmlString = makeHtmlString({ name: 'br' }, xmlOptions);
 		test('Result Should Be a Self Closing BR Tag', () => {
 			console.log(xmlString);
 			return xmlString === '<br />';
@@ -120,7 +125,7 @@ testGroup('Make XML String'.toUpperCase(), () => {
 	});
 
 	testGroup('With "{ name: \'br\', selfClosing: false }" Definition', () => {
-		const xmlString = makeXmlString({ name: 'br', selfClosing: false });
+		const xmlString = makeHtmlString({ name: 'br', selfClosing: false }, xmlOptions);
 		test('Result Should Be an Empty BR Tag', () => {
 			console.log(xmlString);
 			return xmlString === '<br></br>';

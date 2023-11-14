@@ -8,11 +8,11 @@
 </head>
 
 <body>
-	<script src="./node_modules/test-group/dist/test-group.js"></script>
-	<script src="./dist/make-html-string.js"></script>
+	<script src="../node_modules/test-group/dist/test-group.js"></script>
+	<script src="../dist/make-html-string.js"></script>
 	<script>
 		const { test, testGroup } = TestGroup;
-		const { default: makeHtmlString, makeXmlString } = MakeHtmlString;
+		const { default: makeHtmlString } = MakeHtmlString;
 
 		testGroup('Make HTML String'.toUpperCase(), () => {
 			testGroup('With No Definition', () => {
@@ -105,8 +105,13 @@
 		});
 
 		testGroup('Make XML String'.toUpperCase(), () => {
+			const xmlOptions = {
+				selfClosing: true,
+				voidElements: []
+			};
+
 			testGroup('With No Definition', () => {
-				const xmlString = makeXmlString();
+				const xmlString = makeHtmlString({}, xmlOptions);
 				test('Result Should Be a Self Closing DIV Tag', () => {
 					console.log(xmlString);
 					return xmlString === '<div />';
@@ -114,7 +119,7 @@
 			});
 
 			testGroup('With "{ name: \'svg\' }" Definition', () => {
-				const xmlString = makeXmlString({ name: 'svg' });
+				const xmlString = makeHtmlString({ name: 'svg' }, xmlOptions);
 				test('Result Should Be a Self Closing SVG Tag', () => {
 					console.log(xmlString);
 					return xmlString === '<svg />';
@@ -122,7 +127,7 @@
 			});
 
 			testGroup('With "{ name: \'br\' }" Definition', () => {
-				const xmlString = makeXmlString({ name: 'br' });
+				const xmlString = makeHtmlString({ name: 'br' }, xmlOptions);
 				test('Result Should Be a Self Closing BR Tag', () => {
 					console.log(xmlString);
 					return xmlString === '<br />';
@@ -130,7 +135,7 @@
 			});
 
 			testGroup('With "{ name: \'br\', selfClosing: false }" Definition', () => {
-				const xmlString = makeXmlString({ name: 'br', selfClosing: false });
+				const xmlString = makeHtmlString({ name: 'br', selfClosing: false }, xmlOptions);
 				test('Result Should Be an Empty BR Tag', () => {
 					console.log(xmlString);
 					return xmlString === '<br></br>';
