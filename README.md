@@ -10,15 +10,18 @@ npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#2.
 
 ## Import
 
+This module was coded in ES Module without any web nor NodeJS dependencies.
+This module is compiled into a UMD library via WebPack making it available through ES Module or HTML Script as a global variable/namespace.
+
 ### ES Module
 
 ``` JavaScript
 import makeHtmlString, { HTML_VOID_ELEMENTS } from 'PATH/node_modules/make-html-string/make-html-string.js'
 ```
 
-### HTML Script
+_Note: Please modify the PATH value to point to the correct folder, or use a bundler (like WebPack) to manage dependencies._
 
-The project contains a build script that uses the webpack dependency to build the ES module into the UMD library creating MakeHtmlString global variable/namespace.
+### HTML Script
 
 ``` HTML
 <script src="PATH/node_modules/make-html-string/dist/make-html-string.js"></script>
@@ -27,11 +30,13 @@ The project contains a build script that uses the webpack dependency to build th
 </script>
 ```
 
-## Constants
+_Note: Please modify the PATH value to point to the correct folder._
 
-Constant | Type | Description
--- | -- | --
-HTML_VOID_ELEMENTS | [STRING] | A list of valid HTML Void Elements.
+## Constant: HTML_VOID_ELEMENTS
+
+Type [STRING].
+
+A list of valid HTML Void Elements.
 
 ## Function: makeHtmlString(definition)
 
@@ -46,8 +51,8 @@ Returns STRING.
 Property | Type | Description
 -- | -- | --
 name | STRING | Optional. Element name. Defaults to 'div'.
-attributes | OBJECT | Optional. Element attributes names and values.
-children | ARRAY | Optional. Element children as a list of primative values and makeHtmlsString definitions.
+attributes | OBJECT | Optional. Element attributes names and values. Null and Undefined values are ignored.
+children | ARRAY | Optional. Element children as a list of primative values and makeHtmlsString definitions. Null and Undefined values are ignored.
 selfClosing | BOOLEAN | Optional. Flag to use self closing syntax when the element is one of the HTML Void Elements or when the element does not have any valid children. Defaults to false.
 voidElements | [STRING] | Optional. A list of HTML Void Elements. Defaults to HTML_VOID_ELEMENTS constant.
 
@@ -66,20 +71,29 @@ makeHtmlString({ name: 'span' });
 // Output: '<span id="span-id" data-test></span>'
 makeHtmlString({
   name: 'span',
-  attributes: { id: 'span-id', 'data-test': '' }
+  attributes: {
+    'id': 'span-id',
+    'data-test': ''
+  }
 });
 
 // Output: '<span id="span-id" data-test>Hello World</span>'
 makeHtmlString({
   name: 'span',
-  attributes: { 'id': 'span-id', 'data-test': '' },
+  attributes: {
+    'id': 'span-id',
+    'data-test': ''
+  },
   children: ['Hello World']
 });
 
 // Output: '<span id="span-id" data-test><strong>Hello World</strong></span>'
 makeHtmlString({
   name: 'span',
-  attributes: { 'id': 'span-id', 'data-test': '' },
+  attributes: {
+    'id': 'span-id',
+    'data-test': ''
+  },
   children: [
     {
       name: 'strong',
