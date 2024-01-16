@@ -1,132 +1,149 @@
 # make-html-string
 
-Returns a valid HTML tag as a string.
+Makes a valid HTML as string.
 
-## NPM Installation
+## Installation
 
 ```
-npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#2.0.0
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#3.0.0
 ```
 
-## Function: makeHtmlString(definition, options)
+## Import
 
-Argument | Type | Description
--- | -- | --
-`definition` | `object` | _Optional_. Defines the HTML string. _Defaults to `{}`_.
-`options` | `object` | _Optional_. Configures function behaviour. _Defaults to `{}`_.
+This module was coded in ES Module without any web nor NodeJS dependencies.
+This module is compiled into a UMD library via WebPack making it available through ES Module or HTML Script as a global variable/namespace.
 
-Return type: `string`.
+### ES Module
 
 ``` JavaScript
-import makeHtmlString from 'make-html-string';
-
-// <div></div>
-makeHtmlString();
-
-// <span></span>
-makeHtmlString({ name: 'span' }); 
-
-// <br> - void element
-makeHtmlString({ name: 'br' });
-
-// <span class="class-name" id="class-id"></span>
-makeHtmlString({ 
-  name: 'span', 
-  attributes: { 
-    'class': 'class-name', 
-    'id': 'class-id' 
-  } 
-})
-
-// <span>true</span>
-makeHtmlString({ 
-  name: 'span', 
-  children: true
-});
-
-// <span>100</span>
-makeHtmlString({ 
-  name: 'span', 
-  children: 100
-});
-
-// <span>Hello World</span>
-makeHtmlString({ 
-  name: 'span', 
-  children: 'Hello World'
-});
-
-// <span><strong>Hello World</strong></span>
-makeHtmlString({ 
-  name: 'span', 
-  children: { 
-    name: 'strong', 
-    children: 'Hello World' 
-  }
-});
-
-// <span><strong>Hello</strong> World</span>
-makeHtmlString({ 
-  name: 'span', 
-  children: [
-    { 
-      name: 'strong', 
-      children: 'Hello' 
-    },
-    ' World'
-  ]
-});
+import makeHtmlString, { HTML_VOID_ELEMENTS } from 'PATH/node_modules/make-html-string/make-html-string.js'
 ```
 
-### Argument: definition
+_Note: Please modify the PATH value to point to the correct folder, or use a bundler (like WebPack) to manage dependencies._
 
-Type: `any`. _Optional_.
-
-When typeof "undefined", uses the default value of `{}`.
-
-When typeof "null", returns an empty string (`''`).
-
-When typeof "boolean", "number" or "string", returns the string equivalent of the value.
-
-When typeof "object", defines an HTML string using the following keys:
-
-Key | Type | Description
--- | -- | --
-`name` | `string` | _Optional_. Tag name. _Defaults to `'div'`_
-`attributes` | `object` | _Optional_. Tag attributes.
-`children` | `object` | _Optional_. Tag children.
-`selfClosing` | `boolean` | _Optional_. Overrides the `options.selfClosing` main argument for this and children elements.
-`voidElements` | `[string]` | _Optional_. Overrides the `options.voidElements` main argument for this and children elements.
-
-When typeof "array", returns the joined values of the array items based on the above results.
-
-### Argument: options
-
-Type: `object`. _Optional_.
-
-Key | Type | Description
--- | -- | --
-`selfClosing` | `boolean` | _Optional_. Uses the self-closing tag format when `children` is not defined. _Defaults to `false`_.
-`voidElements` | `[string]` | _Optional_. A list of tag names that should be treated as HTML void elements. Should be set to falsy value (`false` or `0` or `''` or `null`) to make xml strings. _Defaults to `HTML_VOID_ELEMENTS` constant_.
-
-## Constant: HTML_VOID_ELEMENTS
-
-``` JavaScript
-export const HTML_VOID_ELEMENTS
-	= ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-```
-
-__Note__: Neither doctype (`<!DOCTYPE html>`) nor XML declaration (`<?xml version="1.0" encoding="UTF-8"?>`) are not included. If needed, you should pass this in the definition as string.
-
-## Using Script Tag
-
-The JavaScript library (found in the "dist" folder) can be used directly using an HTML script tag. The JavaScript module is exposed as a global `MakeHtmlString` namespace with the main function exposed as `MakeHtmlString.default`.
+### HTML Script
 
 ``` HTML
-<script src="node_modules/make-html-string/dist/make-html-string.js"></script>
+<script src="PATH/node_modules/make-html-string/dist/make-html-string.js"></script>
 <script>
   const { default: makeHtmlString, HTML_VOID_ELEMENTS } = MakeHtmlString;
 </script>
+```
+
+_Note: Please modify the PATH value to point to the correct folder._
+
+## Constant: HTML_VOID_ELEMENTS
+
+Type [STRING].
+
+A list of valid HTML Void Elements.
+
+## Function: makeHtmlString(definition)
+
+Argument | Type | Description
+-- | -- | --
+definition | OBJECT | Optional. HTML definition. Defaults to {}.
+
+Returns STRING.
+
+### Argument: definition
+
+Property | Type | Description
+-- | -- | --
+name | STRING | Optional. Element name. Defaults to 'div'.
+attributes | OBJECT | Optional. Element attributes names and values. Null and Undefined values are ignored.
+children | ARRAY | Optional. Element children as a list of primative values and makeHtmlsString definitions. Null and Undefined values are ignored.
+selfClosing | BOOLEAN | Optional. Flag to use self closing syntax when the element is one of the HTML Void Elements or when the element does not have any valid children. Defaults to false.
+voidElements | [STRING] | Optional. A list of HTML Void Elements. Defaults to HTML_VOID_ELEMENTS constant.
+
+### Usage
+
+``` JavaScript
+// Output: '<div></div>'
+makeHtmlString();
+
+// Output: '<div></div>'
+makeHtmlString({});
+
+// Output: '<span</span>'
+makeHtmlString({ name: 'span' });
+
+// Output: '<span id="span-id" data-test></span>'
+makeHtmlString({
+  name: 'span',
+  attributes: {
+    'id': 'span-id',
+    'data-test': ''
+  }
+});
+
+// Output: '<span id="span-id" data-test>Hello World</span>'
+makeHtmlString({
+  name: 'span',
+  attributes: {
+    'id': 'span-id',
+    'data-test': ''
+  },
+  children: ['Hello World']
+});
+
+// Output: '<span id="span-id" data-test><strong>Hello World</strong></span>'
+makeHtmlString({
+  name: 'span',
+  attributes: {
+    'id': 'span-id',
+    'data-test': ''
+  },
+  children: [
+    {
+      name: 'strong',
+      children: ['Hello World']
+    }
+  ]
+});
+
+// Output: '<svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="red" /><circle cx="150" cy="100" r="80" fill="green" /><text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text></svg>'
+makeHtmlString({
+  name: svg,
+  attributes: {
+    'version': '1.1',
+    'width': 300,
+    'height': 200,
+    'xmlns': 'http://www.w3.org/2000/svg'
+  },
+  children: [
+    {
+      name: 'rect',
+      attributes: {
+        'width': '100%',
+        'height': '100%',
+        'fill': 'red'
+      }
+    },
+    {
+      name: 'circle',
+      attributes: {
+        'cx': 150,
+        'cy': 100,
+        'r': 80,
+        'fill': 'green'
+      }
+    },
+    {
+      name: 'text',
+      attributes: {
+        'x': 150,
+        'y': 125,
+        'font-size': 60,
+        'text-anchor': 'middle',
+        'fill': 'white'
+      },
+      children: ['SVG']
+    }
+  ],
+  selfClosing: true,
+  voidElements: []
+});
 ```
 
 ## References
