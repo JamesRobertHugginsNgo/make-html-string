@@ -5,7 +5,7 @@ Makes a valid HTML as string.
 ## Installation
 
 ```
-npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#3.0.0
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#3.1.0
 ```
 
 ## Import
