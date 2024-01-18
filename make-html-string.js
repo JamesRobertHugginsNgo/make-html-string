@@ -20,6 +20,38 @@ export const HTML_VOID_ELEMENTS = [
 ];
 
 // ==
+// FUNCTION: MAKE CHILDREN HTML STRING
+// ==
+
+export function makeChildrenHtmlString(
+	children = [],
+	{
+		selfClosing = false,
+		voidElements = HTML_VOID_ELEMENTS
+	} = {}
+) {
+	const childrenArray = [];
+
+	const length = children.length;
+	for (let index = 0; index < length; index++) {
+		const child = children[index];
+		if (child != null) {
+			if (typeof child !== 'object') {
+				childrenArray.push(child);
+			} else {
+				childrenArray.push(makeHtmlString({
+					selfClosing,
+					voidElements,
+					...child
+				}));
+			}
+		}
+	}
+
+	return childrenArray.join('');
+}
+
+// ==
 // FUNCTION: MAKE HTML STRING
 // ==
 
@@ -54,32 +86,15 @@ export default function makeHtmlString(
 			htmlArray.push('>');
 		}
 	} else {
-		const childrenArray = [];
-		if (children) {
-			const length = children.length;
-			for (let index = 0; index < length; index++) {
-				const child = children[index];
-				if (child != null) {
-					if (typeof child !== 'object') {
-						childrenArray.push(child);
-					} else {
-						childrenArray.push(makeHtmlString({
-							selfClosing,
-							voidElements,
-							...child
-						}));
-					}
-				}
-			}
-		}
-		if (childrenArray.length === 0) {
+		const childrenString = !children ? false : makeChildrenHtmlString(children);
+		if (!childrenString) {
 			if (selfClosing) {
 				htmlArray.push(' />');
 			} else {
 				htmlArray.push('></', name, '>');
 			}
 		} else {
-			htmlArray.push('>', ...childrenArray, '</', name, '>');
+			htmlArray.push('>', childrenString, '</', name, '>');
 		}
 	}
 

@@ -16,7 +16,7 @@ This module is compiled into a UMD library via WebPack making it available throu
 ### ES Module
 
 ``` JavaScript
-import makeHtmlString, { HTML_VOID_ELEMENTS } from 'PATH/node_modules/make-html-string/make-html-string.js'
+import makeHtmlString, { HTML_VOID_ELEMENTS, makeChildrenHtmlString } from 'PATH/node_modules/make-html-string/make-html-string.js'
 ```
 
 _Note: Please modify the PATH value to point to the correct folder, or use a bundler (like WebPack) to manage dependencies._
@@ -26,7 +26,7 @@ _Note: Please modify the PATH value to point to the correct folder, or use a bun
 ``` HTML
 <script src="PATH/node_modules/make-html-string/dist/make-html-string.js"></script>
 <script>
-  const { default: makeHtmlString, HTML_VOID_ELEMENTS } = MakeHtmlString;
+  const { default: makeHtmlString, HTML_VOID_ELEMENTS, makeChildrenHtmlString } = MakeHtmlString;
 </script>
 ```
 
@@ -38,7 +38,27 @@ Type [STRING].
 
 A list of valid HTML Void Elements.
 
+## Function: makeChildrenHtmlString(children, options)
+
+Makes a valid HTML children as string.
+
+Argument | Type | Description
+-- | -- | --
+children | ARRAY | Optional. Element children as a list of primative values and makeHtmlsString definitions. Null and Undefined values are ignored. Defaults to [].
+options | OBJECT | Optional. Additional options that can be passed down from the main makeHtmlString function.Defaults to {}.
+
+Returns STRING.
+
+### Argument: options
+
+Property | Type | Description
+-- | -- | --
+selfClosing | BOOLEAN | Optional. Flag to use self closing syntax when the element is one of the HTML Void Elements or when the element does not have any valid children. Defaults to false.
+voidElements | [STRING] | Optional. A list of HTML Void Elements. Defaults to HTML_VOID_ELEMENTS constant.
+
 ## Function: makeHtmlString(definition)
+
+Makes a valid HTML as string.
 
 Argument | Type | Description
 -- | -- | --
