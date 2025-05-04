@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script type="module">
+		import makeHtmlString from '../dist/make-html-string.js';
+		const definition = {
+			name: 'div',
+			attributes: { id: 'div-id' },
+			children: [
+				'HELLO WORLD',
+				{ name: 'br' },
+				[
+					'HELLO',
+					' ',
+					{
+						name: 'strong',
+						children: ['WORLD']
+					},
+					{
+						name: 'custom',
+						isVoidElement: true,
+						isSelfClosing: true
+					}
+				]
+			]
+		};
+		const html = makeHtmlString(definition);
+		console.log(html);
+		document.body.insertAdjacentHTML('beforeend', html);
+	</script>
+</body>
+
+</html>

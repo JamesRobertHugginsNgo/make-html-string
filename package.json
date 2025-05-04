@@ -2,19 +2,36 @@
   "name": "make-html-string",
   "version": "3.1.0",
   "description": "",
-  "main": "make-html-string.js",
-  "type": "module",
-  "scripts": {
-    "build": "webpack --config webpack.config.js --mode production",
-    "test": "node tests/node.js"
-  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "James Robert Huggins Ngo",
+    "email": "jamesroberthugginsngo@gmail.com",
+    "url": "https://jamesroberthugginsngo.github.io"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/JamesRobertHugginsNgo/make-html-string#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesRobertHugginsNgo/make-html-string.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JamesRobertHugginsNgo/make-html-string/issues"
+  },
+  "type": "module",
+  "main": "./src/make-html-string.js",
+  "exports": {
+    ".": {
+      "types": "./dist/make-html-string.d.ts",
+      "default": "./dist/make-html-string.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
+    "watch": "tsc -project ./tsconfig.json --watch",
+    "copyfiles": "node copy-files.js"
+  },
   "devDependencies": {
-    "eslint": "^8.51.0",
-    "test-group": "github:JamesRobertHugginsNgo/test-group#1.2.0",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
   }
 }
