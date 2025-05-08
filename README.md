@@ -6,6 +6,12 @@
 
 A system for generating HTML string and adding functionality through callbacks.
 
+## Installation
+
+```
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#4.0.0 --save
+```
+
 ## make-html-string
 
 Core functions. HTML string definition is needed to generate the HTML string and callback definition is needed to call the right callback and specify its options.
