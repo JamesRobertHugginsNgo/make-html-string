@@ -1,172 +1,42 @@
 # make-html-string
 
-Makes a valid HTML as string.
+[![Open in Github](https://img.shields.io/badge/Open_in_GitHub-6e5494)](https://github.com/JamesRobertHugginsNgo/make-html-string/)
+[![Open in Github Page](https://img.shields.io/badge/Open_in_GitHub_Page-4078c0)](https://jamesroberthugginsngo.github.io/make-html-string/)
+[![Open Tag](https://img.shields.io/badge/Open_Tag-4.0.0-6cc644)](https://github.com/JamesRobertHugginsNgo/make-html-string/tree/4.0.0)
 
-## Installation
+A system for generating HTML string and adding functionality through callbacks.
 
-```
-npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#3.1.0
-```
+## make-html-string
 
-## Import
+Core functions. HTML string definition is needed to generate the HTML string and callback definition is needed to call the right callback and specify its options.
 
-This module was coded in ES Module without any web nor NodeJS dependencies.
-This module is compiled into a UMD library via WebPack making it available through ES Module or HTML Script as a global variable/namespace.
+- Boilerplate Code
+	- TypeScript
+		- [src/make-html-string.ts](./src/make-html-string.ts) [[Raw](./src/make-html-string.ts?raw=1)]
+		- [src/implement-callbacks.ts](./src/implement-callbacks.ts) [[Raw](./src/implement-callbacks.ts?raw=1)]
+	- JavaScript
+		- [dist/make-html-string.js](./dist/make-html-string.js) [[Raw](./dist/make-html-string.js?raw=1)]
+		- [dist/implement-callbacks.js](./dist/implement-callbacks.js) [[Raw](./dist/implement-callbacks.js?raw=1)]
+- [Sample Usage (sample/make-html-string.html)](./sample/make-html-string.html)
 
-### ES Module
+## make-hello-world
 
-``` JavaScript
-import makeHtmlString, { HTML_VOID_ELEMENTS, makeChildrenHtmlString } from 'PATH/node_modules/make-html-string/make-html-string.js'
-```
+A sample definitions factory for returning html string definition and callback definition.
 
-_Note: Please modify the PATH value to point to the correct folder, or use a bundler (like WebPack) to manage dependencies._
-
-### HTML Script
-
-``` HTML
-<script src="PATH/node_modules/make-html-string/dist/make-html-string.js"></script>
-<script>
-  const { default: makeHtmlString, HTML_VOID_ELEMENTS, makeChildrenHtmlString } = MakeHtmlString;
-</script>
-```
-
-_Note: Please modify the PATH value to point to the correct folder._
-
-## Constant: HTML_VOID_ELEMENTS
-
-Type [STRING].
-
-A list of valid HTML Void Elements.
-
-## Function: makeChildrenHtmlString(children, options)
-
-Makes a valid HTML children as string.
-
-Argument | Type | Description
--- | -- | --
-children | ARRAY | Optional. Element children as a list of primative values and makeHtmlsString definitions. Null and Undefined values are ignored. Defaults to [].
-options | OBJECT | Optional. Additional options that can be passed down from the main makeHtmlString function.Defaults to {}.
-
-Returns STRING.
-
-### Argument: options
-
-Property | Type | Description
--- | -- | --
-selfClosing | BOOLEAN | Optional. Flag to use self closing syntax when the element is one of the HTML Void Elements or when the element does not have any valid children. Defaults to false.
-voidElements | [STRING] | Optional. A list of HTML Void Elements. Defaults to HTML_VOID_ELEMENTS constant.
-
-## Function: makeHtmlString(definition)
-
-Makes a valid HTML as string.
-
-Argument | Type | Description
--- | -- | --
-definition | OBJECT | Optional. HTML definition. Defaults to {}.
-
-Returns STRING.
-
-### Argument: definition
-
-Property | Type | Description
--- | -- | --
-name | STRING | Optional. Element name. Defaults to 'div'.
-attributes | OBJECT | Optional. Element attributes names and values. Null and Undefined values are ignored.
-children | ARRAY | Optional. Element children as a list of primative values and makeHtmlsString definitions. Null and Undefined values are ignored.
-selfClosing | BOOLEAN | Optional. Flag to use self closing syntax when the element is one of the HTML Void Elements or when the element does not have any valid children. Defaults to false.
-voidElements | [STRING] | Optional. A list of HTML Void Elements. Defaults to HTML_VOID_ELEMENTS constant.
-
-### Usage
-
-``` JavaScript
-// Output: '<div></div>'
-makeHtmlString();
-
-// Output: '<div></div>'
-makeHtmlString({});
-
-// Output: '<span</span>'
-makeHtmlString({ name: 'span' });
-
-// Output: '<span id="span-id" data-test></span>'
-makeHtmlString({
-  name: 'span',
-  attributes: {
-    'id': 'span-id',
-    'data-test': ''
-  }
-});
-
-// Output: '<span id="span-id" data-test>Hello World</span>'
-makeHtmlString({
-  name: 'span',
-  attributes: {
-    'id': 'span-id',
-    'data-test': ''
-  },
-  children: ['Hello World']
-});
-
-// Output: '<span id="span-id" data-test><strong>Hello World</strong></span>'
-makeHtmlString({
-  name: 'span',
-  attributes: {
-    'id': 'span-id',
-    'data-test': ''
-  },
-  children: [
-    {
-      name: 'strong',
-      children: ['Hello World']
-    }
-  ]
-});
-
-// Output: '<svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="red" /><circle cx="150" cy="100" r="80" fill="green" /><text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text></svg>'
-makeHtmlString({
-  name: svg,
-  attributes: {
-    'version': '1.1',
-    'width': 300,
-    'height': 200,
-    'xmlns': 'http://www.w3.org/2000/svg'
-  },
-  children: [
-    {
-      name: 'rect',
-      attributes: {
-        'width': '100%',
-        'height': '100%',
-        'fill': 'red'
-      }
-    },
-    {
-      name: 'circle',
-      attributes: {
-        'cx': 150,
-        'cy': 100,
-        'r': 80,
-        'fill': 'green'
-      }
-    },
-    {
-      name: 'text',
-      attributes: {
-        'x': 150,
-        'y': 125,
-        'font-size': 60,
-        'text-anchor': 'middle',
-        'fill': 'white'
-      },
-      children: ['SVG']
-    }
-  ],
-  selfClosing: true,
-  voidElements: []
-});
-```
+- Boilerplate Code
+	- TypeScript
+		- [src/make-hello-world-definitions.ts](./src/make-hello-world-definitions.ts) [[Raw](./src/make-hello-world-definitions.ts?raw=1)]
+		- [src/make-hello-world-implementation.ts](./src/make-hello-world-implementation.ts) [[Raw](./src/make-hello-world-implementation.ts?raw=1)]
+	- JavaScript
+		- [dist/make-hello-world-definitions.js](./dist/make-hello-world-definitions.js) [[Raw](./dist/make-hello-world-definitions.js?raw=1)]
+		- [dist/make-hello-world-implementation.js](./dist/make-hello-world-implementation.js) [[Raw](./dist/make-hello-world-implementation.js?raw=1)]
+- [Sample Usage (sample/make-hello-world.html)](./sample/make-hello-world.html)
 
 ## References
 
-- [Void element, MDN web docs](https://developer.mozilla.org/en-US/docs/Glossary/Void_element).
-- [Self-closing tags, MDN web docs](https://developer.mozilla.org/en-US/docs/Glossary/Void_element#self-closing_tags).
+- https://developer.mozilla.org/en-US/docs/Glossary/Void_element.
+- https://developer.mozilla.org/en-US/docs/Glossary/Void_element#self-closing_tags.
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for more details.

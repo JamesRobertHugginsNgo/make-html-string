@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script type="module">
+		import makeHtmlString, * as MakeHtmlString from '../dist/make-html-string.js';
+
+		const definition = {
+			name: 'div',
+			attributes: { id: 'div-id' },
+			classList: ['div-class-a', 'div-class-b'],
+			styles: { color: 'blue' },
+			children: [
+				'HELLO WORLD',
+				{ name: 'br' },
+				[
+					'HELLO',
+					' ',
+					{
+						name: 'strong',
+						children: ['WORLD'],
+						callback: 'test'
+					},
+					{
+						name: 'custom',
+						dataset: { test: 123 },
+						isVoidElement: true,
+						isSelfClosing: true,
+						callback: 'test'
+					}
+				]
+			],
+			callback: 'test'
+		};
+		console.log('definition', definition);
+
+		const html = makeHtmlString(definition);
+		console.log('html', html);
+
+		document.body.insertAdjacentHTML('beforeend', html);
+
+		MakeHtmlString.callCallbacks(definition, {
+			test: (definition) => {
+				console.log('TEST', definition);
+				if (definition.attributes?.id == null) {
+					return;
+				}
+				const element = document.getElementById(definition.attributes.id);
+				element.style.backgroundColor = 'salmon';
+			}
+		});
+
+		console.log(MakeHtmlString.getCallbackList(definition));
+	</script>
+</body>
+
+</html>
