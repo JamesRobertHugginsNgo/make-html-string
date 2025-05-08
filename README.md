@@ -6,12 +6,6 @@
 
 A system for generating HTML string and adding functionality through callbacks.
 
-## Installation
-
-```
-npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#4.0.0 --save
-```
-
 ## make-html-string
 
 Core functions. HTML string definition is needed to generate the HTML string and callback definition is needed to call the right callback and specify its options.
@@ -37,6 +31,12 @@ A sample definitions factory for returning html string definition and callback d
 		- [dist/make-hello-world-definitions.js](./dist/make-hello-world-definitions.js) [[Raw](./dist/make-hello-world-definitions.js?raw=1)]
 		- [dist/make-hello-world-implementation.js](./dist/make-hello-world-implementation.js) [[Raw](./dist/make-hello-world-implementation.js?raw=1)]
 - [Sample Usage (sample/make-hello-world.html)](./sample/make-hello-world.html)
+
+## Installation
+
+```
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#4.0.0
+```
 
 ## References
 

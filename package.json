@@ -21,6 +21,14 @@
   "main": "./src/make-html-string.js",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./implement-callbacks": {
+      "types": "./dist/implement-callbacks.d.ts",
+      "default": "./dist/implement-callbacks.js"
+    },
+    "./make-html-string": {
       "types": "./dist/make-html-string.d.ts",
       "default": "./dist/make-html-string.js"
     }
