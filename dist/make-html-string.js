@@ -1,1 +1,42 @@
-!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.MakeHtmlString=t():e.MakeHtmlString=t()}(self,(()=>(()=>{"use strict";var e={d:(t,o)=>{for(var n in o)e.o(o,n)&&!e.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:o[n]})},o:(e,t)=>Object.prototype.hasOwnProperty.call(e,t),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},t={};e.r(t),e.d(t,{HTML_VOID_ELEMENTS:()=>o,default:()=>n});const o=["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"];function n({name:e="div",attributes:t,children:r,selfClosing:s=!1,voidElements:l=o}={}){const i=[e];if(t)for(const e in t){const o=t[e];null!=o&&(""===o?i.push(e):i.push(`${e}="${o}"`))}const u=["<",i.join(" ")];if(l.includes(e))s?u.push(" />"):u.push(">");else{const t=[];if(r){const e=r.length;for(let o=0;o<e;o++){const e=r[o];null!=e&&("object"!=typeof e?t.push(e):t.push(n({selfClosing:s,voidElements:l,...e})))}}0===t.length?s?u.push(" />"):u.push("></",e,">"):u.push(">",...t,"</",e,">")}return u.join("")}return t})()));
+export const VOID_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+export function makeChildrenHtmlString(children, options = {}) {
+    const htmlString = [];
+    for (const child of children) {
+        if (child == null) {
+            continue;
+        }
+        if (Array.isArray(child)) {
+            htmlString.push(makeChildrenHtmlString(child, options));
+            continue;
+        }
+        if (typeof child === 'object' && 'name' in child) {
+            htmlString.push(makeHtmlString(child, options));
+            continue;
+        }
+        htmlString.push(child);
+    }
+    return htmlString.join('');
+}
+export default function makeHtmlString(definition, options = {}) {
+    const { voidElements = VOID_ELEMENTS, isSelfClosing: isSelfClosingOption = false } = options;
+    const { name, attributes, children, isVoidElement = voidElements.includes(name), isSelfClosing = isSelfClosingOption } = definition;
+    const tag = [name];
+    if (attributes != null) {
+        for (const name in attributes) {
+            const value = attributes[name];
+            if (value == null) {
+                continue;
+            }
+            if (value === '') {
+                tag.push(name);
+                continue;
+            }
+            tag.push(`${name}="${value}"`);
+        }
+    }
+    if (isVoidElement) {
+        return `<${tag.join(' ')}${isSelfClosing ? ' />' : '>'}`;
+    }
+    const childrenHtmlString = children == null ? '' : makeChildrenHtmlString(children, options);
+    return `<${tag.join(' ')}>${childrenHtmlString}</${name}>`;
+}
