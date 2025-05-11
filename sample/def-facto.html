@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script type="module">
+		import defFacto from '../dist/def-facto.js';
+		import makeHtmlString, * as MakeHtmlString from '../dist/make-html-string.js'
+
+		const definition = defFacto({ greeting: 'Hello', message: 'World' });
+		console.log(definition);
+
+		document.body.insertAdjacentHTML('beforeend', makeHtmlString(definition));
+		MakeHtmlString.callCallbacks(definition);
+	</script>
+</body>
+
+</html>

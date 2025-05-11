@@ -26,9 +26,8 @@
     }
   },
   "scripts": {
-    "build": "tsc -project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
-    "watch": "tsc -project ./tsconfig.json --watch",
-    "copyfiles": "node copy-files.js"
+    "build": "tsc --project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
+    "watch": "tsc --project ./tsconfig.json --watch"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
