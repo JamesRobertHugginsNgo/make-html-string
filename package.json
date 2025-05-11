@@ -21,22 +21,13 @@
   "main": "./src/make-html-string.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./implement-callbacks": {
-      "types": "./dist/implement-callbacks.d.ts",
-      "default": "./dist/implement-callbacks.js"
-    },
-    "./make-html-string": {
       "types": "./dist/make-html-string.d.ts",
       "default": "./dist/make-html-string.js"
     }
   },
   "scripts": {
-    "build": "tsc -project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
-    "watch": "tsc -project ./tsconfig.json --watch",
-    "copyfiles": "node copy-files.js"
+    "build": "tsc --project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
+    "watch": "tsc --project ./tsconfig.json --watch"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
