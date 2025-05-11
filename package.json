@@ -1,6 +1,6 @@
 {
   "name": "make-html-string",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "",
   "keywords": [],
   "author": {
@@ -26,9 +26,8 @@
     }
   },
   "scripts": {
-    "build": "tsc -project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
-    "watch": "tsc -project ./tsconfig.json --watch",
-    "copyfiles": "node copy-files.js"
+    "build": "tsc --project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
+    "watch": "tsc --project ./tsconfig.json --watch"
   },
   "devDependencies": {
     "prettier": "^3.5.3",

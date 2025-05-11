@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script type="module">
+		import makeHtmlString, * as MakeHtmlString from '../dist/make-html-string.js'
+
+		MakeHtmlString.callbacks['log'] = (definition) => void console.log('LOG', definition);
+
+		const definition = {
+			name: 'div',
+			attributes: { id: 'div-id' },
+			classList: ['div-class'],
+			styles: { 'color': 'darkgrey' },
+			children: [
+				'Hello',
+				[
+					' ',
+					{
+						name: 'span',
+						dataSet: { 'test': true },
+						children: ['World'],
+						callback: 'log'
+					}
+				]
+			],
+			callback: (definition) => void console.log('CALLBACK', definition)
+		};
+		console.log(definition);
+
+		document.body.insertAdjacentHTML('beforeend', makeHtmlString(definition));
+		MakeHtmlString.callCallbacks(definition);
+	</script>
+</body>
+
+</html>
