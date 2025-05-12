@@ -1,7 +1,11 @@
 type Nullable = undefined | null;
 type Stringable = boolean | number | string;
 export type Callback = (definition: Definition) => void;
-export type ChildDefinition = Stringable | Definition | ChildDefinition[];
+export type ChildDefinition =
+	| Nullable
+	| Stringable
+	| Definition
+	| ChildDefinition[];
 export type Definition = {
 	name: string;
 	attributes?: {
