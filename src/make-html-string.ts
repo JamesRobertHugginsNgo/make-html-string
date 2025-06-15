@@ -1,164 +1,162 @@
-type Nullable = undefined | null;
-type Stringable = boolean | number | string;
+const VOID_ELEMENTS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
 
-export type Callback = (definition: Definition) => void;
+type Attributes = Record<string, string>;
 
-export type ChildDefinition = Nullable | Stringable | Definition | ChildDefinition[];
+type Child = Definition | string;
 
-export type Definition = {
+export interface Definition {
 	name: string,
-	attributes?: { [key: string]: Nullable | Stringable },
-	children?: ChildDefinition[],
-	classList?: (Nullable | Stringable)[],
-	styles?: { [key: string]: Nullable | Stringable },
-	dataSet?: { [key: string]: Nullable | Stringable },
+	attributes?: Attributes,
+	children?: Child[],
 	isVoidElement?: boolean,
-	isSelfClosing?: boolean,
-	callback?: string | Callback
+	callback?: string
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// MAKE HTML STRING
-////////////////////////////////////////////////////////////////////////////////
-
-export type Options = {
-	voidElements?: string[],
+interface Options {
+	voidElements?: Set<string>,
 	isSelfClosing?: boolean
 };
-
-export const VOID_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-
-export function makeChildrenHtmlString(children?: ChildDefinition[], options?: Options): string {
-	if (children == null) {
-		return '';
-	}
-
-	const htmlString: Stringable[] = [];
-	for (const child of children) {
-		if (child == null) {
-			continue;
-		}
-		if (Array.isArray(child)) {
-			htmlString.push(makeChildrenHtmlString(child, options));
-			continue;
-		}
-		if (typeof child === 'object' && 'name' in child) {
-			htmlString.push(makeHtmlString(child, options));
-			continue;
-		}
-		htmlString.push(child);
-	}
-	return htmlString.join('');
-}
 
 export default function makeHtmlString(definition: Definition, options: Options = {}): string {
 	const {
 		voidElements = VOID_ELEMENTS,
-		isSelfClosing: isSelfClosingOption = false
+		isSelfClosing = false
 	} = options;
 
 	const {
 		name,
 		attributes,
 		children,
-		classList,
-		styles,
-		dataSet,
-		isVoidElement = voidElements.includes(name),
-		isSelfClosing = isSelfClosingOption
+		isVoidElement = voidElements.has(name)
 	} = definition;
 
-	const tag: string[] = [name];
-
-	if (attributes != null) {
+	const mappedAttributes: string[] = [];
+	if (attributes !== undefined) {
 		for (const name in attributes) {
-			const value = attributes[name];
-			if (value == null) {
-				continue;
-			}
-			if (value === '') {
-				tag.push(name);
-				continue;
-			}
-			tag.push(`${name}="${value}"`);
-		}
-	}
-
-	if (classList != null) {
-		tag.push(`class="${classList.filter((className) => className != null).join(' ')}"`);
-	}
-
-	if (styles != null) {
-		const values: string[] = [];
-		for (const name in styles) {
-			const value = styles[name];
-			if (value == null) {
-				continue;
-			}
-			values.push(`${name}: ${value};`);
-		}
-		tag.push(`style="${values.join(' ')}"`);
-	}
-
-	if (dataSet != null) {
-		for (const name in dataSet) {
-			const value = dataSet[name];
-			if (value == null) {
-				continue;
-			}
-			if (value === '') {
-				tag.push(`data-${name}`);
-				continue;
-			}
-			tag.push(`data-${name}="${value}"`);
+			mappedAttributes.push(`${name}="${attributes[name]}"`);
 		}
 	}
 
 	if (isVoidElement) {
-		return `<${tag.join(' ')}${isSelfClosing ? ' />' : '>'}`;
+		return `<${[name, ...mappedAttributes].join(' ')}${!isSelfClosing ? '' : ' /'}>`;
 	}
 
-	return `<${tag.join(' ')}>${makeChildrenHtmlString(children, options)}</${name}>`;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// CALL CALLBACK
-////////////////////////////////////////////////////////////////////////////////
-
-export const callbacks: { [key: string]: Callback } = {};
-
-export function callChildrenCallbacks(children?: ChildDefinition[]): void {
-	if (children == null) {
-		return;
-	}
-
-	for (const child of children) {
-		if (Array.isArray(child)) {
-			callChildrenCallbacks(child);
-			continue;
-		}
-		if (child != null && typeof child === 'object' && 'name' in child) {
-			callCallbacks(child);
-			continue;
+	const mappedChildren: string[] = [];
+	if (children !== undefined) {
+		for (const child of children) {
+			if (typeof child === 'object') {
+				mappedChildren.push(makeHtmlString(child, options));
+				continue;
+			}
+			mappedChildren.push(child);
 		}
 	}
+
+	return `<${[name, ...mappedAttributes].join(' ')}>${mappedChildren.join('')}</${name}>`;
 }
 
-export function callCallbacks(definition: Definition): void {
+type RawAttributes = Record<string, string | number | boolean | null | undefined>;
+
+export function cleanupAttributes(rawAttributes: RawAttributes): Attributes {
+	const attributes: Attributes = {};
+
+	for (const name in rawAttributes) {
+		const value = rawAttributes[name];
+		if (value == null) continue;
+
+		attributes[name] = typeof value !== 'string' ? String(value) : value;
+	};
+
+	return attributes;
+}
+
+export function makeClassAttributes(classList: (string | number | boolean | null | undefined)[]): Attributes {
+	const classNames: string[] = [];
+	for (const className of classList) {
+		if (className == null) continue;
+
+		classNames.push(typeof className !== 'string' ? String(className) : className);
+	}
+
+	if (classNames.length === 0) return {};
+
+	return {
+		class: classNames.join(' ')
+	}
+}
+
+export function makeStyleAttribute(styles: Record<string, string | number | boolean | null | undefined>): Attributes {
+	const declarations: string[] = [];
+	for (const property in styles) {
+		const value = styles[property];
+		if (value == null) continue;
+
+		declarations.push(`${property}: ${value};`);
+	}
+
+	if (declarations.length === 0) return {};
+
+	return {
+		style: declarations.join(' ')
+	}
+}
+
+export function makeDataAttribute(data: Record<string, string | number | boolean | null | undefined>): Attributes {
+	const attributes: Attributes = {};
+
+	for (const name in data) {
+		const value = data[name];
+		if (value == null) continue;
+
+		attributes[`data-${name}`] = typeof value !== 'string' ? String(value) : value;
+	}
+
+	return attributes;
+}
+
+type RawChild = Definition | string | number | boolean | null | undefined | RawChild[];
+
+export function cleanupChildren(rawChildren: RawChild[]): Child[] {
+	const children: Child[] = [];
+
+	const processRawChildren = (rawChildren: RawChild[]): void => {
+		for (const child of rawChildren) {
+			if (child == null) continue;
+
+			if (Array.isArray(child)) {
+				processRawChildren(child);
+				continue;
+			}
+
+			children.push(typeof child !== 'object' && typeof child !== 'string' ? String(child) : child);
+		}
+	}
+	processRawChildren(rawChildren);
+
+	return children;
+}
+
+type Callback = (definition: Definition) => void;
+
+export const callbackRegistry: Record<string, Callback> = {};
+
+export function processCallbacks(definition: Definition): void {
 	const {
 		children,
 		callback
 	} = definition;
 
-	if (children != null) {
-		callChildrenCallbacks(children);
-	}
+	if (children !== undefined) {
+		for (const child of children) {
+			if (typeof child === 'string') continue;
 
-	if (callback != null) {
-		if (typeof callback === 'string') {
-			callbacks[callback](definition);
-		} else {
-			callback(definition);
+			processCallbacks(child);
 		}
 	}
+
+	if (callback === undefined) return;
+
+	if (!(callback in callbackRegistry)) throw 'Error';
+
+	callbackRegistry[callback](definition);
 }

@@ -11,31 +11,40 @@
 	<script type="module">
 		import makeHtmlString, * as MakeHtmlString from '../dist/make-html-string.js'
 
-		MakeHtmlString.callbacks['log'] = (definition) => void console.log('LOG', definition);
+		MakeHtmlString.callbackRegistry['log'] = (definition) => void console.log('LOG CALLBACK', definition);
 
 		const definition = {
 			name: 'div',
-			attributes: { id: 'div-id' },
-			classList: ['div-class'],
-			styles: { 'color': 'darkgrey' },
-			children: [
+			attributes: {
+				id: 'div-id',
+
+				...MakeHtmlString.makeClassAttributes(['div-class']),
+				...MakeHtmlString.makeStyleAttribute({
+					'color': 'darkgrey'
+				})
+			},
+			children: MakeHtmlString.cleanupChildren([
 				'Hello',
 				[
 					' ',
 					{
 						name: 'span',
-						dataSet: { 'test': true },
+						attributes: {
+							...MakeHtmlString.makeDataAttribute({
+								test: true
+							})
+						},
 						children: ['World'],
 						callback: 'log'
 					}
 				]
-			],
-			callback: (definition) => void console.log('CALLBACK', definition)
+			]),
+			callback: 'log'
 		};
-		console.log(definition);
+		console.log('DEFINITION', definition);
 
 		document.body.insertAdjacentHTML('beforeend', makeHtmlString(definition));
-		MakeHtmlString.callCallbacks(definition);
+		MakeHtmlString.processCallbacks(definition);
 	</script>
 </body>
 
