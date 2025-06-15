@@ -1,4 +1,4 @@
-export const VOID_ELEMENTS = [
+const VOID_ELEMENTS = new Set([
 	'area',
 	'base',
 	'br',
@@ -13,120 +13,109 @@ export const VOID_ELEMENTS = [
 	'source',
 	'track',
 	'wbr',
-];
-export function makeChildrenHtmlString(children, options) {
-	if (children == null) {
-		return '';
-	}
-	const htmlString = [];
-	for (const child of children) {
-		if (child == null) {
-			continue;
-		}
-		if (Array.isArray(child)) {
-			htmlString.push(makeChildrenHtmlString(child, options));
-			continue;
-		}
-		if (typeof child === 'object' && 'name' in child) {
-			htmlString.push(makeHtmlString(child, options));
-			continue;
-		}
-		htmlString.push(child);
-	}
-	return htmlString.join('');
-}
+]);
 export default function makeHtmlString(definition, options = {}) {
-	const {
-		voidElements = VOID_ELEMENTS,
-		isSelfClosing: isSelfClosingOption = false,
-	} = options;
+	const { voidElements = VOID_ELEMENTS, isSelfClosing = false } = options;
 	const {
 		name,
 		attributes,
 		children,
-		classList,
-		styles,
-		dataSet,
-		isVoidElement = voidElements.includes(name),
-		isSelfClosing = isSelfClosingOption,
+		isVoidElement = voidElements.has(name),
 	} = definition;
-	const tag = [name];
-	if (attributes != null) {
+	const mappedAttributes = [];
+	if (attributes !== undefined) {
 		for (const name in attributes) {
-			const value = attributes[name];
-			if (value == null) {
-				continue;
-			}
-			if (value === '') {
-				tag.push(name);
-				continue;
-			}
-			tag.push(`${name}="${value}"`);
-		}
-	}
-	if (classList != null) {
-		tag.push(
-			`class="${classList.filter((className) => className != null).join(' ')}"`,
-		);
-	}
-	if (styles != null) {
-		const values = [];
-		for (const name in styles) {
-			const value = styles[name];
-			if (value == null) {
-				continue;
-			}
-			values.push(`${name}: ${value};`);
-		}
-		tag.push(`style="${values.join(' ')}"`);
-	}
-	if (dataSet != null) {
-		for (const name in dataSet) {
-			const value = dataSet[name];
-			if (value == null) {
-				continue;
-			}
-			if (value === '') {
-				tag.push(`data-${name}`);
-				continue;
-			}
-			tag.push(`data-${name}="${value}"`);
+			mappedAttributes.push(`${name}="${attributes[name]}"`);
 		}
 	}
 	if (isVoidElement) {
-		return `<${tag.join(' ')}${isSelfClosing ? ' />' : '>'}`;
+		return `<${[name, ...mappedAttributes].join(' ')}${!isSelfClosing ? '' : ' /'}>`;
 	}
-	return `<${tag.join(' ')}>${makeChildrenHtmlString(children, options)}</${name}>`;
-}
-////////////////////////////////////////////////////////////////////////////////
-// CALL CALLBACK
-////////////////////////////////////////////////////////////////////////////////
-export const callbacks = {};
-export function callChildrenCallbacks(children) {
-	if (children == null) {
-		return;
-	}
-	for (const child of children) {
-		if (Array.isArray(child)) {
-			callChildrenCallbacks(child);
-			continue;
-		}
-		if (child != null && typeof child === 'object' && 'name' in child) {
-			callCallbacks(child);
-			continue;
+	const mappedChildren = [];
+	if (children !== undefined) {
+		for (const child of children) {
+			if (typeof child === 'object') {
+				mappedChildren.push(makeHtmlString(child, options));
+				continue;
+			}
+			mappedChildren.push(child);
 		}
 	}
+	return `<${[name, ...mappedAttributes].join(' ')}>${mappedChildren.join('')}</${name}>`;
 }
-export function callCallbacks(definition) {
+export function cleanupAttributes(rawAttributes) {
+	const attributes = {};
+	for (const name in rawAttributes) {
+		const value = rawAttributes[name];
+		if (value == null) continue;
+		attributes[name] = typeof value !== 'string' ? String(value) : value;
+	}
+	return attributes;
+}
+export function makeClassAttributes(classList) {
+	const classNames = [];
+	for (const className of classList) {
+		if (className == null) continue;
+		classNames.push(
+			typeof className !== 'string' ? String(className) : className,
+		);
+	}
+	if (classNames.length === 0) return {};
+	return {
+		class: classNames.join(' '),
+	};
+}
+export function makeStyleAttribute(styles) {
+	const declarations = [];
+	for (const property in styles) {
+		const value = styles[property];
+		if (value == null) continue;
+		declarations.push(`${property}: ${value};`);
+	}
+	if (declarations.length === 0) return {};
+	return {
+		style: declarations.join(' '),
+	};
+}
+export function makeDataAttribute(data) {
+	const attributes = {};
+	for (const name in data) {
+		const value = data[name];
+		if (value == null) continue;
+		attributes[`data-${name}`] =
+			typeof value !== 'string' ? String(value) : value;
+	}
+	return attributes;
+}
+export function cleanupChildren(rawChildren) {
+	const children = [];
+	const processRawChildren = (rawChildren) => {
+		for (const child of rawChildren) {
+			if (child == null) continue;
+			if (Array.isArray(child)) {
+				processRawChildren(child);
+				continue;
+			}
+			children.push(
+				typeof child !== 'object' && typeof child !== 'string'
+					? String(child)
+					: child,
+			);
+		}
+	};
+	processRawChildren(rawChildren);
+	return children;
+}
+export const callbackRegistry = {};
+export function processCallbacks(definition) {
 	const { children, callback } = definition;
-	if (children != null) {
-		callChildrenCallbacks(children);
-	}
-	if (callback != null) {
-		if (typeof callback === 'string') {
-			callbacks[callback](definition);
-		} else {
-			callback(definition);
+	if (children !== undefined) {
+		for (const child of children) {
+			if (typeof child === 'string') continue;
+			processCallbacks(child);
 		}
 	}
+	if (callback === undefined) return;
+	if (!(callback in callbackRegistry)) throw 'Error';
+	callbackRegistry[callback](definition);
 }
