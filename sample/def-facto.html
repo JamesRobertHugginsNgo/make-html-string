@@ -9,14 +9,15 @@
 
 <body>
 	<script type="module">
-		import defFacto from '../dist/def-facto.js';
 		import makeHtmlString, * as MakeHtmlString from '../dist/make-html-string.js'
 
+		import defFacto from './dist/def-facto.js';
+
 		const definition = defFacto({ greeting: 'Hello', message: 'World' });
-		console.log(definition);
+		console.log('DEFINITION', definition);
 
 		document.body.insertAdjacentHTML('beforeend', makeHtmlString(definition));
-		MakeHtmlString.callCallbacks(definition);
+		MakeHtmlString.processCallbacks(definition);
 	</script>
 </body>
 

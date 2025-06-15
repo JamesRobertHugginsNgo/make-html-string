@@ -27,7 +27,9 @@
   },
   "scripts": {
     "build": "tsc --project ./tsconfig.json && prettier --single-quote --write ./dist/**/*.[tj]s",
-    "watch": "tsc --project ./tsconfig.json --watch"
+    "watch": "tsc --project ./tsconfig.json --watch",
+    "sample-build": "tsc --project ./sample/tsconfig.json && prettier --single-quote --write ./sample/dist/**/*.[tj]s",
+    "sample-watch": "tsc --project ./sample/tsconfig.json --watch"
   },
   "devDependencies": {
     "prettier": "^3.5.3",

@@ -1,46 +1,46 @@
-type Nullable = undefined | null;
-type Stringable = boolean | number | string;
-export type Callback = (definition: Definition) => void;
-export type ChildDefinition =
-	| Nullable
-	| Stringable
-	| Definition
-	| ChildDefinition[];
-export type Definition = {
+type Attributes = Record<string, string>;
+type Child = Definition | string;
+export interface Definition {
 	name: string;
-	attributes?: {
-		[key: string]: Nullable | Stringable;
-	};
-	children?: ChildDefinition[];
-	classList?: (Nullable | Stringable)[];
-	styles?: {
-		[key: string]: Nullable | Stringable;
-	};
-	dataSet?: {
-		[key: string]: Nullable | Stringable;
-	};
+	attributes?: Attributes;
+	children?: Child[];
 	isVoidElement?: boolean;
+	callback?: string;
+}
+interface Options {
+	voidElements?: Set<string>;
 	isSelfClosing?: boolean;
-	callback?: string | Callback;
-};
-export type Options = {
-	voidElements?: string[];
-	isSelfClosing?: boolean;
-};
-export declare const VOID_ELEMENTS: string[];
-export declare function makeChildrenHtmlString(
-	children?: ChildDefinition[],
-	options?: Options,
-): string;
+}
 export default function makeHtmlString(
 	definition: Definition,
 	options?: Options,
 ): string;
-export declare const callbacks: {
-	[key: string]: Callback;
-};
-export declare function callChildrenCallbacks(
-	children?: ChildDefinition[],
-): void;
-export declare function callCallbacks(definition: Definition): void;
+type RawAttributes = Record<
+	string,
+	string | number | boolean | null | undefined
+>;
+export declare function cleanupAttributes(
+	rawAttributes: RawAttributes,
+): Attributes;
+export declare function makeClassAttributes(
+	classList: (string | number | boolean | null | undefined)[],
+): Attributes;
+export declare function makeStyleAttribute(
+	styles: Record<string, string | number | boolean | null | undefined>,
+): Attributes;
+export declare function makeDataAttribute(
+	data: Record<string, string | number | boolean | null | undefined>,
+): Attributes;
+type RawChild =
+	| Definition
+	| string
+	| number
+	| boolean
+	| null
+	| undefined
+	| RawChild[];
+export declare function cleanupChildren(rawChildren: RawChild[]): Child[];
+type Callback = (definition: Definition) => void;
+export declare const callbackRegistry: Record<string, Callback>;
+export declare function processCallbacks(definition: Definition): void;
 export {};
