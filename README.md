@@ -2,7 +2,7 @@
 
 [![Open in Github](https://img.shields.io/badge/Open_in_GitHub-6e5494)](https://github.com/JamesRobertHugginsNgo/make-html-string/)
 [![Open in Github Page](https://img.shields.io/badge/Open_in_GitHub_Page-4078c0)](https://jamesroberthugginsngo.github.io/make-html-string/)
-[![Open Tag](https://img.shields.io/badge/Open_Tag-5.0.1-6cc644)](https://github.com/JamesRobertHugginsNgo/make-html-string/tree/5.0.1)
+[![Open Tag](https://img.shields.io/badge/Open_Tag-6.0.0-6cc644)](https://github.com/JamesRobertHugginsNgo/make-html-string/tree/6.0.0)
 
 A system for generating HTML string and adding functionality through callbacks.
 
@@ -21,7 +21,7 @@ A system for generating HTML string and adding functionality through callbacks.
 ## Installation
 
 ```
-npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#5.0.1
+npm install git+https://github.com/JamesRobertHugginsNgo/make-html-string.git#6.0.0
 ```
 
 ## References
