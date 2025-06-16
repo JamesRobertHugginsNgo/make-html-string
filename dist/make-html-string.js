@@ -52,41 +52,6 @@ export function cleanupAttributes(rawAttributes) {
 	}
 	return attributes;
 }
-export function makeClassAttributes(classList) {
-	const classNames = [];
-	for (const className of classList) {
-		if (className == null) continue;
-		classNames.push(
-			typeof className !== 'string' ? String(className) : className,
-		);
-	}
-	if (classNames.length === 0) return {};
-	return {
-		class: classNames.join(' '),
-	};
-}
-export function makeStyleAttribute(styles) {
-	const declarations = [];
-	for (const property in styles) {
-		const value = styles[property];
-		if (value == null) continue;
-		declarations.push(`${property}: ${value};`);
-	}
-	if (declarations.length === 0) return {};
-	return {
-		style: declarations.join(' '),
-	};
-}
-export function makeDataAttribute(data) {
-	const attributes = {};
-	for (const name in data) {
-		const value = data[name];
-		if (value == null) continue;
-		attributes[`data-${name}`] =
-			typeof value !== 'string' ? String(value) : value;
-	}
-	return attributes;
-}
 export function cleanupChildren(rawChildren) {
 	const children = [];
 	const processRawChildren = (rawChildren) => {
@@ -107,7 +72,7 @@ export function cleanupChildren(rawChildren) {
 	return children;
 }
 export const callbackRegistry = {};
-export function processCallbacks(definition) {
+export function processCallbacks(definition, containerElement) {
 	const { children, callback } = definition;
 	if (children !== undefined) {
 		for (const child of children) {
@@ -117,5 +82,15 @@ export function processCallbacks(definition) {
 	}
 	if (callback === undefined) return;
 	if (!(callback in callbackRegistry)) throw 'Error';
-	callbackRegistry[callback](definition);
+	callbackRegistry[callback](definition, containerElement);
+}
+export function getElementByDefinition(definition, containerElement) {
+	const { attributes } = definition;
+	if (attributes === undefined) return null;
+	const { id } = attributes;
+	if (id === undefined) return null;
+	if (containerElement !== undefined) {
+		return containerElement.querySelector(`#${id}`);
+	}
+	return document.getElementById(id);
 }

@@ -15,32 +15,25 @@ export default function makeHtmlString(
 	definition: Definition,
 	options?: Options,
 ): string;
-type RawAttributes = Record<
-	string,
-	string | number | boolean | null | undefined
->;
+export type Stringable = string | number | boolean;
+type Nullable = null | undefined;
+type RawAttributes = Record<string, Stringable | Nullable>;
 export declare function cleanupAttributes(
 	rawAttributes: RawAttributes,
 ): Attributes;
-export declare function makeClassAttributes(
-	classList: (string | number | boolean | null | undefined)[],
-): Attributes;
-export declare function makeStyleAttribute(
-	styles: Record<string, string | number | boolean | null | undefined>,
-): Attributes;
-export declare function makeDataAttribute(
-	data: Record<string, string | number | boolean | null | undefined>,
-): Attributes;
-type RawChild =
-	| Definition
-	| string
-	| number
-	| boolean
-	| null
-	| undefined
-	| RawChild[];
+type RawChild = Definition | Stringable | Nullable | RawChild[];
 export declare function cleanupChildren(rawChildren: RawChild[]): Child[];
-type Callback = (definition: Definition) => void;
+type Callback = (
+	definition: Definition,
+	containerElement?: HTMLElement,
+) => void;
 export declare const callbackRegistry: Record<string, Callback>;
-export declare function processCallbacks(definition: Definition): void;
+export declare function processCallbacks(
+	definition: Definition,
+	containerElement?: HTMLElement,
+): void;
+export declare function getElementByDefinition(
+	definition: Definition,
+	containerElement?: HTMLElement,
+): HTMLElement | null;
 export {};

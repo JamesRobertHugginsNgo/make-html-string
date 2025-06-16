@@ -55,7 +55,11 @@ export default function makeHtmlString(definition: Definition, options: Options 
 	return `<${[name, ...mappedAttributes].join(' ')}>${mappedChildren.join('')}</${name}>`;
 }
 
-type RawAttributes = Record<string, string | number | boolean | null | undefined>;
+export type Stringable = string | number | boolean;
+
+type Nullable = null | undefined;
+
+type RawAttributes = Record<string, Stringable | Nullable>;
 
 export function cleanupAttributes(rawAttributes: RawAttributes): Attributes {
 	const attributes: Attributes = {};
@@ -70,51 +74,7 @@ export function cleanupAttributes(rawAttributes: RawAttributes): Attributes {
 	return attributes;
 }
 
-export function makeClassAttributes(classList: (string | number | boolean | null | undefined)[]): Attributes {
-	const classNames: string[] = [];
-	for (const className of classList) {
-		if (className == null) continue;
-
-		classNames.push(typeof className !== 'string' ? String(className) : className);
-	}
-
-	if (classNames.length === 0) return {};
-
-	return {
-		class: classNames.join(' ')
-	}
-}
-
-export function makeStyleAttribute(styles: Record<string, string | number | boolean | null | undefined>): Attributes {
-	const declarations: string[] = [];
-	for (const property in styles) {
-		const value = styles[property];
-		if (value == null) continue;
-
-		declarations.push(`${property}: ${value};`);
-	}
-
-	if (declarations.length === 0) return {};
-
-	return {
-		style: declarations.join(' ')
-	}
-}
-
-export function makeDataAttribute(data: Record<string, string | number | boolean | null | undefined>): Attributes {
-	const attributes: Attributes = {};
-
-	for (const name in data) {
-		const value = data[name];
-		if (value == null) continue;
-
-		attributes[`data-${name}`] = typeof value !== 'string' ? String(value) : value;
-	}
-
-	return attributes;
-}
-
-type RawChild = Definition | string | number | boolean | null | undefined | RawChild[];
+type RawChild = Definition | Stringable | Nullable | RawChild[];
 
 export function cleanupChildren(rawChildren: RawChild[]): Child[] {
 	const children: Child[] = [];
@@ -136,11 +96,11 @@ export function cleanupChildren(rawChildren: RawChild[]): Child[] {
 	return children;
 }
 
-type Callback = (definition: Definition) => void;
+type Callback = (definition: Definition, containerElement?: HTMLElement) => void;
 
 export const callbackRegistry: Record<string, Callback> = {};
 
-export function processCallbacks(definition: Definition): void {
+export function processCallbacks(definition: Definition, containerElement?: HTMLElement): void {
 	const {
 		children,
 		callback
@@ -158,5 +118,19 @@ export function processCallbacks(definition: Definition): void {
 
 	if (!(callback in callbackRegistry)) throw 'Error';
 
-	callbackRegistry[callback](definition);
+	callbackRegistry[callback](definition, containerElement);
+}
+
+export function getElementByDefinition(definition: Definition, containerElement?: HTMLElement): HTMLElement | null {
+	const { attributes } = definition;
+	if (attributes === undefined) return null;
+
+	const { id } = attributes;
+	if (id === undefined) return null;
+
+	if (containerElement !== undefined) {
+		return containerElement.querySelector(`#${id}`);
+	}
+
+	return document.getElementById(id);
 }
